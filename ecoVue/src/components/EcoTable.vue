@@ -1,94 +1,200 @@
 <template>
-<!-- 数据表格 -->
-<div class="ecoListTables" ref="tableContainer">
-    <!-- 表头 -->
-    <div class="ecoListTableHeadDiv">
-    <table  class="ecoListTableHead">
-    <colgroup>
-        <col v-for="(col, index) in columnWidths" 
-                :key="index"
-                :style="{ width: col + 'px' }">
-        <col v-for="(col, index) in dynamicWidths" 
-                :key="index"
-                :style="{ width: col + 'px' }">
-    </colgroup>
-    <thead>
-        <tr>
-            <!-- Methods 和 Datasets -->
-            <th v-for="(header, index) in baseHeaders" :key ="index"
-                :rowspan="2">
-                <template v-if="header.key === 'datasets'">
-                    <select v-model="dselectedType" class="type-filter">
-                        <option value="">Datasets</option>
-                        <option v-for="type in duniqueTypes" :key="type" :value="type">
-                            {{ type }}
-                        </option>
-                    </select>
-                </template>
-                <template v-else>
-                    {{ header.title }}
-                </template>
-            </th>
-            <th :colspan="5">Integration Accuracy Metrics</th>
-            <th :colspan="5">Bio Conservation</th>
-            <th :colspan="5">Batch Correction</th>
-        </tr>
-        <tr>
-        <th v-for="(header, index) in tableHeaders" 
-            :key="index"
-            :class="{ 
-                'sortable': header.sortable,
-                'active': header.sortable && sortKey === header.key,
-                'resizable':index < tableHeaders.length - 1
-            }"
-            @click="header.sortable ? toggleSort(header.key) : null"
-            >
-            <div class="header-content">
-                <template v-if="header.key === 'datasets'">
-                    <!-- 保持下拉框 -->
-                </template>
-                <template v-else>
-                    {{ header.title }}
-                </template>
-                <span v-if="header.sortable" class="sort-indicator">
-                    {{ showSortIndicator(header.key) }}
-                </span>
-            </div>
-        </th>
-        </tr>
-    </thead>
-    </table>
+<div class="ecoList">
+    <!-- 数据表格 -->
+    <div class="ecoListTables" ref="tableContainer">
+        <!-- 表头 -->
+        <div class="ecoListTableHeadDiv">
+            <table class="ecoListTableHead">
+                <colgroup>
+                    <col v-for="(col, index) in columnWidths" 
+                        :key="index"
+                        :style="{ width: col + 'px' }">
+                    <col v-for="(col, index) in dynamicWidths" 
+                        :key="index"
+                        :style="{ width: col + 'px' }">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <!-- Methods 和 Datasets -->
+                        <!-- <th v-for="(header, index) in baseHeaders" :key ="index"
+                            :rowspan="2">
+                            <template v-if="header.key === 'datasets'">
+                                <select v-model="dselectedType" class="type-filter">
+                                    <option value="">Datasets</option>
+                                    <option v-for="type in duniqueTypes" :key="type" :value="type">
+                                        {{ type }}
+                                    </option>
+                                </select>
+                            </template>
+                            <template v-else>
+                                {{ header.title }}
+                            </template>
+                        </th> -->
+                        <th  >
+                            <button class="submit-btn"
+                             @click="showRatioModal = true">Score Cal</button>
+                        </th>
+                        <th  > </th>
+                        <th :colspan="5">Integration Accuracy</th>
+                        <th :colspan="5">Bio Conservation</th>
+                        <th :colspan="5">Batch Correction</th>
+                        <th v-if="showScoreColumn"
+                            :rowspan = "2"
+                            :class="{
+                                'active':sortKey === 'score'
+                            }"
+                            
+                            @click=" toggleSort('score')"
+                            >
+                            Score
+                            <span class="sort-indicator">
+                                {{ showSortIndicator('score') }}
+                            </span>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th v-for="(header, index) in baseHeaders" :key ="index"
+                            :rowspan="2">
+                            <template v-if="header.key === 'datasets'">
+                                <select v-model="dselectedType" class="type-filter">
+                                    <option value="">Datasets</option>
+                                    <option v-for="type in duniqueTypes" :key="type" :value="type">
+                                        {{ type }}
+                                    </option>
+                                </select>
+                            </template>
+                            <template v-else>
+                                {{ header.title }}
+                            </template>
+                        </th>
+                        <th v-for="(header, index) in tableHeaders" 
+                            :key="index"
+                            :class="{ 
+                                'sortable': header.sortable,
+                                'active': header.sortable && sortKey === header.key,
+                                'resizable':index < tableHeaders.length - 1
+                            }"
+                            @click="header.sortable ? toggleSort(header.key) : null"
+                            >
+                            <div class="header-content">
+                                <template v-if="header.key === 'datasets'">
+                                    <!-- 保持下拉框 -->
+                                </template>
+                                <template v-else>
+                                    {{ header.title }}
+                                </template>
+                                <span v-if="header.sortable" class="sort-indicator">
+                                    {{ showSortIndicator(header.key) }}
+                                </span>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        
+        <!-- 内容 -->
+        <div  class="ecoListTableBodyDiv" @scroll="handleScroll">
+            <table class="ecoListTableBody">
+                <colgroup>
+                    <col v-for="(col, index) in columnWidths" 
+                        :key="index"
+                        :style="{ width: col + 'px' }">
+                    <col v-for="(col, index) in dynamicWidths" 
+                        :key="index"
+                        :style="{ width: col + 'px' }">
+                </colgroup>
+                <tbody>
+                    <tr v-for="item in filteredData" :key="item.id">
+                        <td v-for="(header, index) in baseHeaders" :key="index">
+                            <template v-if="index === 0">
+                                <template v-if="item.datasets === 'PBMC-10x'">
+                                    <router-link 
+                                        :to="{ name: 'ImageShow', params: { name: item.methods } }"
+                                        class="detail-link">
+                                        {{ item[header.key] }}
+                                    </router-link>
+                                </template>
+                                <template v-else>
+                                    {{ item[header.key] }}
+                                </template>
+                            </template>
+                            <template v-else>
+                                {{ item[header.key] }}
+                            </template>
+                        </td>
+                        <td v-for="(header, index) in tableHeaders" :key="index">
+                            {{ item[header.key] }}
+                        </td>
+                        <td 
+                            v-if="showScoreColumn"
+                            class="score-cell"
+                            >
+                            {{ item['score'] }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-    
-    <!-- 内容 -->
-    <div  class="ecoListTableBodyDiv" @scroll="handleScroll">
-    <table class="ecoListTableBody">
-    <colgroup>
-        <col v-for="(col, index) in columnWidths" 
-                :key="index"
-                :style="{ width: col + 'px' }">
-        <col v-for="(col, index) in dynamicWidths" 
-                :key="index"
-                :style="{ width: col + 'px' }">
-    </colgroup>
-    <tbody>
-        <tr v-for="item in filteredData" :key="item.id">
-        <td v-for="(header, index) in tableHeaders" :key="index">
-            <template v-if="index === 0">
-            <router-link 
-                :to="{ name: 'Detail', params: { name: item.methods } }"
-                class="detail-link">
-                {{ item[header.key] }}
-            </router-link>
-            </template>
-            <template v-else>
-                {{ item[header.key] }}
-            </template>
-        </td>
-        </tr>
-    </tbody>
-    </table>
+
+    <div v-if="showRatioModal" class="modalRatio">
+    <div class="modal-content">
+      <h3 class="modal-title">Score Calculate</h3>
+      
+      <!-- 自定义表单结构 -->
+      <div class="custom-form">
+        <div class="form-item">
+          <label>Integration Accuracy</label>
+          <input 
+            type="number" 
+            v-model.number="ratioForm.ia"
+            min="0" 
+            max="1" 
+            step="0.1"
+            @input="validateSum"
+          >
+        </div>
+        
+        <div class="form-item">
+          <label>Bio Conservation</label>
+          <input 
+            type="number" 
+            v-model.number="ratioForm.bio"
+            min="0" 
+            max="1" 
+            step="0.1"
+            @input="validateSum"
+          >
+        </div>
+        
+        <div class="form-item">
+          <label>Batch Correction</label>
+          <input 
+            type="number" 
+            v-model.number="ratioForm.batch"
+            min="0" 
+            max="1" 
+            step="0.1"
+            @input="validateSum"
+          >
+        </div>
+        
+        <div class="error-msg" v-if="errorMessage">
+          {{ errorMessage }}
+        </div>
+        
+        <div class="form-actions">
+          <button class="cancel-btn" @click="showRatioModal = false">Cancel</button>
+          <button 
+            class="submit-btn" 
+            @click="calculateOverall"
+            :disabled="!!errorMessage"
+          >Calculate</button>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 </template>
   
@@ -112,7 +218,7 @@
         'Bio Conservation':[
             { title: 'Traj Conserv' , key: 'traj_conserv', sortable: true },
             { title: 'Biomarker' , key: 'biomarker', sortable: true },
-            { title: 'DARs' , key: 'dars', sortable: true },
+            { title: 'DARs', key: 'dars', sortable: true },
             { title: 'Enriched Motif' , key: 'enriched_motif', sortable: true },
             { title: 'Overall' , key: 'bio_overall', sortable: true }
         ],
@@ -178,14 +284,16 @@
     }
 
     // 定义列宽 计算标题基准宽度的方法
-    const columnWidths = ref([150, 150])
+    const columnWidths = ref([220, 150])
     const dynamicWidths = ref([]);
     const calculateTitleWidth = () => {
         const containerWidth = tableContainer.value?.offsetWidth || 0
         if (!containerWidth) return
 
-        const baseWidths = tableHeaders.value.map(header => Math.max(header.title.length * 11, 100))
-
+        const baseWidths = tableHeaders.value.map(header => Math.max(header.title.length * 13, 100))
+        if(showScoreColumn.value) {
+            baseWidths.push(120) // Score列固定宽度
+        }
         // 需要补齐的情况
         const fixedWidth = columnWidths.value.reduce((sum, w) => sum + w, 0)
         const totalWidth = fixedWidth + baseWidths.reduce((sum, w) => sum + w, 0)
@@ -198,6 +306,48 @@
         dynamicWidths.value = baseWidths
     }
     const tableContainer = ref(null)
+
+    const showRatioModal = ref(false)
+    const ratioForm = ref({
+        ia: 0.4,
+        bio: 0.3,
+        batch: 0.3
+    })
+    const overallScores = ref({})
+    const showScoreColumn = ref(false)
+
+    const calculateOverall = () => {
+        const sum = Object.values(ratioForm.value).reduce((a, b) => a + b, 0)
+    
+        if (Math.abs(sum - 1) > 0.001) {
+            alert('The sum of the proportions must equal 1.')
+            return
+        }
+
+        // 计算加权平均
+        overallScores.value = {}
+        rawData.value.forEach(item => {
+            const score = 
+                (item.ia_overall * ratioForm.value.ia) +
+                (item.bio_overall * ratioForm.value.bio) +
+                (item.batch_overall * ratioForm.value.batch)
+            
+            item.score = score.toFixed(4)
+        })
+        showRatioModal.value = false
+        showScoreColumn.value = true
+        calculateTitleWidth()
+        // 在 DOM 更新之后将滚动轴置于最右端
+        nextTick(() => {
+            const bodyScrollElement = bodyScroll.value;
+            if (bodyScrollElement) {
+                bodyScrollElement.scrollLeft = bodyScrollElement.scrollWidth;
+            }
+        });
+    }
+
+    
+
 
     // 生命周期
     onMounted(async () => {
@@ -216,7 +366,20 @@
 </script>
   
 <style scoped>
+    .ecoList {
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 5px;
+        width: 100%;
+        height:870px;
+        margin: 0 auto;
+        color: white;
+        display: flex;
+        flex-direction: column; /* 启用弹性布局 */
+        
+    }
     .ecoListTables{
+        color: white;
         width: 100%;
         height: 100%;
         flex: 1; /* 占据剩余空间 */
@@ -230,6 +393,7 @@
         width: 100%;
         border-collapse: collapse;
         background-color: #28313E;
+        
     }
     .ecoListTableHeadDiv{
         flex-shrink: 0; /* 固定高度 */
@@ -240,10 +404,14 @@
     }
     .ecoListTableBodyDiv{
         flex: 1;
-        overflow-y: auto; /* 内容区域滚动 */
-        width: 100%; /* 移除之前增加的宽度 */
-        padding-right: 0; /* 移除多余的填充 */
+        width: calc(100% + 17px);
+        padding-right: 17px;
+        overflow-x: scroll;
+        overflow-y: auto; /* 保持滚动功能但隐藏滚动条 */
     }
+
+
+
     /* 移除绝对定位 */
     .ecoListTableHeadDiv,
     .ecoListTableBodyDiv {
@@ -259,7 +427,7 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         border: 0.1px solid #4f536f;
-        text-align: left;
+        text-align: center;
     }
     .ecoListTableHead th {
         cursor: pointer;
@@ -317,5 +485,102 @@
 
     .detail-link:hover {
         text-decoration: underline;
+    }
+
+    /* 模态框基础样式 */
+    .modalRatio{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+    background: #2f3a4a;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    color: white;
+    }
+
+    .modal-title {
+    margin: 0 0 20px;
+    font-size: 16px;
+    }
+
+    /* 自定义表单样式 */
+    .custom-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    }
+
+    .form-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    }
+
+    .form-item label {
+    width: 140px;
+    font-size: 14px;
+    }
+
+    .form-item input {
+    width: 180px;
+    padding: 8px 12px;
+    background: #3a4555;
+    border: 1px solid #4f536f;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    }
+
+    /* 错误提示 */
+    .error-msg {
+    color: #ff4d4f;
+    font-size: 12px;
+    text-align: center;
+    height: 20px;
+    }
+
+    /* 按钮样式 */
+    .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+    }
+
+    button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    }
+
+    .cancel-btn {
+    background: #4f536f;
+    color: white;
+    }
+
+    .submit-btn {
+    background: #1890ff;
+    color: white;
+    }
+
+    .submit-btn:disabled {
+    background: #4f536f;
+    cursor: not-allowed;
+    opacity: 0.7;
     }
 </style>

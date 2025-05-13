@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import EcoList from '../components/EcoList.vue'
-import DetailPage from '../components/DetailPage.vue'
+import Details from '../components/Details.vue'
 import UploadFile from '../components/UploadFile.vue'
 import Economy from '../components/Economy.vue'
+import EcoTable from '../components/EcoTable.vue'
 
 const routes = [
     {
@@ -12,8 +13,8 @@ const routes = [
     },
     {
         path: '/detail/:name',
-        name: 'Detail',
-        component: DetailPage,
+        name: 'ImageShow',
+        component: Details,
         props: true
     }
 ]

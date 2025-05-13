@@ -4,12 +4,12 @@
     <div class="economytHead"> 
         Leaderboard 
     </div>
-    <EcoTable />
+    <ImageShow />
 </div>
 </template>
   
 <script setup>
-    import EcoTable from './EcoTable.vue'
+    import ImageShow from './ImageShow.vue'
     import EcoElTable from './EcoElTable.vue'
 </script>
   

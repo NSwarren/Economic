@@ -1,4 +1,5 @@
 <template>
+<div class="ecoList">
     <el-table :data="filteredData" height="250" style="width: 100%">
         <el-table-column prop="methods" label="Method" width="150" />
         <el-table-column prop="datasets"  width="150" >
@@ -31,6 +32,7 @@
             <el-table-column label = "Overall" prop = "batch_overall" />
         </el-table-column>
     </el-table>
+</div>
 </template>
   
 <script setup>
