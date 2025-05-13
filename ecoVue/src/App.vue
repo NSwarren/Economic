@@ -9,7 +9,7 @@
 
 <style scoped>
     .App{
-        background-color: #323232;
+        /* background-color: #323232; */
         height: 100%;
     }
 </style>
