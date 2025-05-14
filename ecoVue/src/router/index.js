@@ -9,14 +9,20 @@ const routes = [
     {
         path: '/',
         name: 'Economy',
-        component: Economy
-    },
-    {
-        path: '/detail/:name',
-        name: 'ImageShow',
-        component: Details,
-        props: true
-    }
+        component: Economy,
+        children:[{
+            path: '',
+            name: 'EcoTable',
+            component: EcoTable,
+            props: true
+        },{
+            path: '/detail/:name',
+            name: 'ImageShow',
+            component: Details,
+            props: true
+        }
+        ]
+    } 
 ]
 
 const router = createRouter({

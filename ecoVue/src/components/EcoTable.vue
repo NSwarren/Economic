@@ -373,13 +373,12 @@
         width: 100%;
         height:870px;
         margin: 0 auto;
-        color: white;
         display: flex;
         flex-direction: column; /* 启用弹性布局 */
         
     }
     .ecoListTables{
-        color: white;
+        color: black;
         width: 100%;
         height: 100%;
         flex: 1; /* 占据剩余空间 */
@@ -392,7 +391,7 @@
         table-layout: fixed;
         width: 100%;
         border-collapse: collapse;
-        background-color: #28313E;
+        background-color: #fafafa;
         
     }
     .ecoListTableHeadDiv{
@@ -426,7 +425,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        border: 0.1px solid #4f536f;
+        border: 0.1px solid #f1f1f1;
         text-align: center;
     }
     .ecoListTableHead th {
@@ -434,10 +433,10 @@
         user-select: none;
     }
     .ecoListTableHead th.active {
-        background-color: #434654;
+        background-color: #e1e1e1;
     }
     .ecoListTableBody tr:hover{
-        background-color: #454856;
+        background-color: #e1e1e1;
     }
 
     .sort-icon {
@@ -450,7 +449,7 @@
         position: sticky;
         left: 0;
         z-index: 2;
-        background: #2f3a4a;
+        background: #fafafa;
         box-shadow: 2px 0 4px rgba(0,0,0,0.1);
     }
 
@@ -462,9 +461,9 @@
 
     /* 下拉框样式 */
     .type-filter {
-        background: #2f3a4a;
+        background: #fafafa;
         border: 1px solid #4f536f;
-        color: white;
+        color: black;
         padding: 5px 5px;
         border-radius: 4px;
         font-size: 0.9em;
@@ -474,11 +473,11 @@
 
     .type-filter:focus {
         outline: none;
-        border-color: #1890ff;
+        border-color: #1A3F90;
         box-shadow: 0 0 3px rgba(24, 144, 255, 0.5);
     }
     .detail-link {
-        color: #05E89D;
+        color: #1A3F90;
         text-decoration: none;
         transition: color 0.3s;
     }
@@ -498,89 +497,90 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        z-index: 2;
     }
     .modal-content {
-    background: #2f3a4a;
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
-    color: white;
+        background: #2f3a4a;
+        padding: 20px;
+        border-radius: 8px;
+        width: 400px;
+        color: white;
     }
 
     .modal-title {
-    margin: 0 0 20px;
-    font-size: 16px;
+        margin: 0 0 20px;
+        font-size: 16px;
     }
 
     /* 自定义表单样式 */
     .custom-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
     }
 
     .form-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     .form-item label {
-    width: 140px;
-    font-size: 14px;
+        width: 140px;
+        font-size: 14px;
     }
 
     .form-item input {
-    width: 180px;
-    padding: 8px 12px;
-    background: #3a4555;
-    border: 1px solid #4f536f;
-    border-radius: 4px;
-    color: white;
-    font-size: 14px;
+        width: 180px;
+        padding: 8px 12px;
+        background: #3a4555;
+        border: 1px solid #4f536f;
+        border-radius: 4px;
+        color: white;
+        font-size: 14px;
     }
 
     input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+        -webkit-appearance: none;
     }
 
     /* 错误提示 */
     .error-msg {
-    color: #ff4d4f;
-    font-size: 12px;
-    text-align: center;
-    height: 20px;
+        color: #ff4d4f;
+        font-size: 12px;
+        text-align: center;
+        height: 20px;
     }
 
     /* 按钮样式 */
     .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 15px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 15px;
     }
 
     button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
     }
 
     .cancel-btn {
-    background: #4f536f;
-    color: white;
+        background: #4f536f;
+        color: white;
     }
 
     .submit-btn {
-    background: #1890ff;
-    color: white;
+        background: #4d7398;
+        color: white;
     }
 
     .submit-btn:disabled {
-    background: #4f536f;
-    cursor: not-allowed;
-    opacity: 0.7;
+        background: #4f536f;
+        cursor: not-allowed;
+        opacity: 0.7;
     }
 </style>

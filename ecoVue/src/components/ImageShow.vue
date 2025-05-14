@@ -70,11 +70,10 @@
   .detailContainer {
     padding-left: 20px;
     padding-right: 20px;
-    padding-top: 5px;
+    padding-top: 20px;
 
-    width: 100%;
+    width: 95%;
     margin: 0 auto;
-    /* background: #28313E; */
     color: black;
     border-radius: 8px;
   }
