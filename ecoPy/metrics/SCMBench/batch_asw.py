@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from scanpy._utils import deprecated_arg_names
+#from scanpy._utils import deprecated_arg_names
 from sklearn.metrics.cluster import silhouette_samples, silhouette_score
 
 

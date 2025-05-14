@@ -91,10 +91,12 @@ def main(args: argparse.Namespace) -> None:
     # round results to .4f
     for k, v in metrics.items():
         metrics[k] = round(float(v), 4)
-    print("[3/3] Saving results...")
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    with args.output.open("w") as f:
-        yaml.dump(metrics, f)
+    # print("[3/3] Saving results...")
+    # args.output.parent.mkdir(parents=True, exist_ok=True)
+    # with args.output.open("w") as f:
+    #     yaml.dump(metrics, f)
+
+    return metrics
 
 
 if __name__ == "__main__":
